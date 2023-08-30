@@ -46,8 +46,7 @@ Node.js and npm should be installed on your machine.
  npm install
 
 ```
-4. Usage
-   In the same directory as the script, put your log files. Add your file names to the fileNames array in index.ts.
+4. In the same directory as the script, put your log files. Add your file names to the fileNames array in index.ts.
 
 Run the script:
 
