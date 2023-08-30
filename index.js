@@ -5,53 +5,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
-// Define the list of log files
+// Defining the list of log files
 const logFiles = ['api-prod-out.log', 'prod-api-prod-out.log', 'api-dev-out.log'];
-// Initialize an array to store log data
+// Initializing an array to store log data
 const data = [];
 // Step 1: Reading and parsing log files
 for (const file of logFiles) {
-    // Read the file contents and split it into lines
+    // Reading the file contents and split it into lines
     const lines = fs_1.default.readFileSync(file, 'utf-8').split('\n');
     for (const line of lines) {
         const parts = line.split(' ');
         const timestamp = parts[0] + ' ' + parts[1];
         const entry = { timestamp };
-        // Check if the line contains an API endpoint and extract it
+        // Checking if the line contains an API endpoint and extracting it
         if (line.includes('/api/')) {
             const endpoint = (_a = line.match(/\/api\/[^\s]+/)) === null || _a === void 0 ? void 0 : _a[0];
             entry.endpoint = endpoint;
         }
-        // Check if the line contains an HTTP status code and extract it
+        // Checking if the line contains an HTTP status code and extracting it
         if (line.includes('HTTP/1.1"')) {
             const status = parseInt(((_b = line.match(/HTTP\/1.1" (\d+)/)) === null || _b === void 0 ? void 0 : _b[1]) || '');
             entry.status = status;
         }
-        // Add the parsed entry to the data array
+        // Adding the parsed entry to the data array
         data.push(entry);
     }
 }
-// Initialize data structures for calculations
+// Initializing data structures for calculations
 const endpointCounts = {};
 const apiCallsPerMinute = {};
 const apiCallsPerStatusCode = {};
 // Step 2: Organizing the data for calculations
 for (const entry of data) {
-    // Update endpointCounts if an endpoint is present in the entry
+    // Updating endpointCounts if an endpoint is present in the entry
     if (entry.endpoint) {
         endpointCounts[entry.endpoint] = (endpointCounts[entry.endpoint] || 0) + 1;
     }
-    // Update apiCallsPerStatusCode if a status code is present in the entry
+    // Updating apiCallsPerStatusCode if a status code is present in the entry
     if (entry.status) {
         apiCallsPerStatusCode[entry.status] = (apiCallsPerStatusCode[entry.status] || 0) + 1;
     }
-    // Update apiCallsPerMinute if a valid timestamp is present in the entry
+    // Updating apiCallsPerMinute if a valid timestamp is present in the entry
     if (!isNaN(Date.parse(entry.timestamp))) {
         const minute = new Date(entry.timestamp).toISOString().substr(11, 5); // Extracting HH:mm from timestamp
         apiCallsPerMinute[minute] = (apiCallsPerMinute[minute] || 0) + 1;
     }
 }
-// Step 3: Calculate insights and sort data
+// Step 3: Calculating insights and sorting data
 const sortedEndpoints = Object.entries(endpointCounts)
     .sort((a, b) => b[1] - a[1])
     .map(([endpoint, count]) => ({
@@ -106,7 +106,7 @@ function getStatusTitle(statusCode) {
             return 'Other';
     }
 }
-// Step 4: Create output content
+// Step 4: Creating text file output content
 const outputContent = `
 Endpoint Counts:
 ${formatTable(sortedEndpoints)}
@@ -117,7 +117,7 @@ ${formatTable(sortedMinutes, 'minute', 'count')}
 API Calls Per HTTP Status Code:
 ${formatTable(sortedStatusCodes, 'statusCode', 'count')}
 `;
-// Step 5: Write output to a file
+// Step 5: Writing output to a file
 const outputFilePath = 'output.txt';
 fs_1.default.writeFileSync(outputFilePath, outputContent, 'utf-8');
 console.log(`Output has been written to ${outputFilePath}`);
