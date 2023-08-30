@@ -52,6 +52,7 @@ Node.js and npm should be installed on your machine.
 Run the script:
 
 ```bash
+ tsc
  npm start
 
 ```
