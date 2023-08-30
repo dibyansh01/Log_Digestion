@@ -10264,7 +10264,7 @@ minute	count
 23:56	422
 23:57	523
 23:58	431
-23:59	428  
+23:59	428
 
 API Calls Per HTTP Status Code:
 statusCode	count
@@ -10276,4 +10276,4 @@ statusCode	count
 422	857
 400	339
 401	44
-416	1  
+416	1
